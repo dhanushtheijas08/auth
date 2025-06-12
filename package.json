@@ -1,4 +1,16 @@
 {
   "name": "auth",
-  "packageManager": "yarn@4.5.2"
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"yarn workspace @auth/backend dev\" \"yarn workspace @auth/frontend dev\"",
+    "build": "yarn workspace @auth/shared build && yarn workspace @auth/backend build && yarn workspace @auth/frontend build",
+    "start": "yarn workspace @auth/backend start"
+  },
+  "packageManager": "yarn@4.5.2",
+  "dependencies": {
+    "concurrently": "^9.1.2"
+  }
 }
