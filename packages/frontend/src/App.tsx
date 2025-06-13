@@ -1,5 +1,7 @@
+import AuthCard from "./components/auth/AuthCard";
+
 function App() {
-  return <div className="text-2xl font-medium">Hello</div>;
+  return <AuthCard />;
 }
 
 export default App;
