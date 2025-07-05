@@ -27,6 +27,7 @@ const userSchema = new Schema<IUserDocument>(
       required: [true, "Password is required"],
       minlength: [6, "Password must be at least 6 characters long"],
       maxlength: [128, "Password cannot be longer than 128 characters"],
+      select: false,
     },
     name: {
       type: String,
@@ -57,6 +58,8 @@ userSchema.methods.comparePassword = async function (
   candidatePassword: string
 ): Promise<boolean> {
   try {
+    console.log({ pass: this.password, candidatePassword });
+
     return await bcrypt.compare(candidatePassword, this.password);
   } catch (error) {
     return false;

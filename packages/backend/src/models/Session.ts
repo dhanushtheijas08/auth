@@ -4,7 +4,6 @@ export type ISession = {
   userId: mongoose.Types.ObjectId;
   token: string;
   deviceInfo?: string;
-  isValid: boolean;
   expiresAt: Date;
   createdAt: Date;
   updatedAt: Date;
@@ -19,20 +18,10 @@ const sessionSchema = new Schema<ISessionDocument>(
       ref: "User",
       required: [true, "User ID is required"],
     },
-    token: {
-      type: String,
-      required: [true, "Token is required"],
-      unique: true,
-      minlength: [32, "Token must be at least 32 characters long"],
-    },
     deviceInfo: {
       type: String,
       required: false,
       maxlength: [255, "Device info cannot be longer than 255 characters"],
-    },
-    isValid: {
-      type: Boolean,
-      default: true,
     },
     expiresAt: {
       type: Date,
