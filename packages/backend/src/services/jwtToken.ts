@@ -1,10 +1,13 @@
-import { jwtVerify, SignJWT } from "jose";
+import { JWTPayload, jwtVerify, SignJWT } from "jose";
+import { Types } from "mongoose";
 
 const secret = new TextEncoder().encode(process.env.SECRET || "sample");
 
-export const createRefreshToken = async (sessionId: string) => {
+export const createRefreshToken = async (
+  sessionId: string | Types.ObjectId
+) => {
   const token = await new SignJWT({
-    sessionId,
+    sessionId: sessionId.toString(),
   })
     .setProtectedHeader({ alg: "HS256", typ: "JWT" })
     .setIssuedAt()
@@ -15,10 +18,13 @@ export const createRefreshToken = async (sessionId: string) => {
   return token;
 };
 
-export const createAccessToken = async (userId: string, sessionId: string) => {
+export const createAccessToken = async (
+  userId: string | Types.ObjectId,
+  sessionId: string | Types.ObjectId
+) => {
   const token = await new SignJWT({
-    userId,
-    sessionId,
+    userId: userId.toString(),
+    sessionId: sessionId.toString(),
   })
     .setProtectedHeader({ alg: "HS256", typ: "JWT" })
     .setIssuedAt()
@@ -39,7 +45,9 @@ export const createAuthToken = async (userId: string, sessionId: string) => {
   };
 };
 
-export const verifyToken = async (token: string) => {
-  const { payload } = await jwtVerify<{ sessionId: string }>(token, secret);
+export const verifyToken = async <T extends JWTPayload = JWTPayload>(
+  token: string
+) => {
+  const { payload } = await jwtVerify<T>(token, secret);
   return payload;
 };

@@ -1,12 +1,23 @@
+import { loginSchema, registerSchema } from "@auth/shared";
 import { NextFunction, Request, Response } from "express";
+import { z } from "zod";
 import ApiError from "../lib/ApiError";
 import { thirtyDaysFromNow } from "../lib/dates";
 import { Session } from "../models/Session";
 import { User } from "../models/User";
-import { clearAuthCookies, setAuthCookies } from "../services/authCookies";
-import { createAuthToken, verifyToken } from "../services/jwtToken";
-import { loginSchema, registerSchema } from "@auth/shared";
-import { z } from "zod";
+import {
+  clearAuthCookies,
+  setAccessTokenCookie,
+  setAuthCookies,
+  setRefreshTokenCookie,
+} from "../services/authCookies";
+import {
+  createAccessToken,
+  createAuthToken,
+  createRefreshToken,
+  verifyToken,
+} from "../services/jwtToken";
+import { RefreshTokenPayload } from "../types/authTypes";
 type RegisterInput = z.infer<typeof registerSchema>;
 type LoginInput = z.infer<typeof loginSchema>;
 
@@ -96,7 +107,7 @@ export const logout = async (
     if (!accessToken) {
       throw new ApiError(401, "No access token provided");
     }
-    const payload = await verifyToken(accessToken);
+    const payload = await verifyToken<RefreshTokenPayload>(accessToken);
 
     if (!payload) {
       throw new ApiError(401, "Invalid access token");
@@ -108,6 +119,60 @@ export const logout = async (
       .json({ success: true, message: "Logout successful" });
   } catch (error) {
     console.log(error);
+    next(error);
+  }
+};
+
+export const generateNewAccessToken = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const refreshToken = req.cookies["refreshToken"];
+    if (!refreshToken) {
+      throw new ApiError(401, "No refresh token provided");
+    }
+
+    const payload = await verifyToken<RefreshTokenPayload>(refreshToken);
+    if (!payload || !payload.exp || !payload.sessionId) {
+      throw new ApiError(401, "Invalid refresh token");
+    }
+
+    const session = await Session.findById(payload.sessionId);
+    if (!session) {
+      throw new ApiError(401, "Session not found");
+    }
+
+    const now = new Date();
+    if (session.expiresAt < now || payload.exp * 1000 < now.getTime()) {
+      throw new ApiError(401, "Session expired");
+    }
+
+    const shouldRefresh =
+      payload.exp * 1000 < now.getTime() + 24 * 60 * 60 * 1000; // less than 1 day remaining
+
+    let newRefreshToken: string | null = null;
+    if (shouldRefresh) {
+      newRefreshToken = await createRefreshToken(session.userId);
+      await Session.findByIdAndUpdate(session.id, {
+        expiresAt: thirtyDaysFromNow(),
+      });
+    }
+
+    const accessToken = await createAccessToken(session.userId, session.id);
+
+    if (newRefreshToken) {
+      setRefreshTokenCookie(res, newRefreshToken);
+    }
+
+    setAccessTokenCookie(res, accessToken).status(200).json({
+      success: true,
+      message: "New access token generated",
+    });
+  } catch (error) {
+    console.error("generateNewAccessToken error:", error);
+    clearAuthCookies(res);
     next(error);
   }
 };

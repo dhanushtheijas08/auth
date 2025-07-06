@@ -7,19 +7,9 @@ const defaultOptions: CookieOptions = {
   sameSite: "strict",
 };
 
-const REFRESH_TOKEN_PATH = "/auth/refresh";
+export const REFRESH_TOKEN_PATH = "/auth/refresh";
 
-export const setAuthCookies = (
-  res: Response,
-  refreshToken: string,
-  accessToken: string
-) => {
-  res.cookie("refreshToken", refreshToken, {
-    ...defaultOptions,
-    expires: thirtyDaysFromNow(),
-    path: REFRESH_TOKEN_PATH,
-  });
-
+export const setAccessTokenCookie = (res: Response, accessToken: string) => {
   res.cookie("accessToken", accessToken, {
     ...defaultOptions,
     expires: fifteenMinFromNow(),
@@ -28,9 +18,29 @@ export const setAuthCookies = (
   return res;
 };
 
+export const setRefreshTokenCookie = (res: Response, refreshToken: string) => {
+  res.cookie("refreshToken", refreshToken, {
+    ...defaultOptions,
+    expires: thirtyDaysFromNow(),
+    path: REFRESH_TOKEN_PATH,
+  });
+
+  return res;
+};
+
+export const setAuthCookies = (
+  res: Response,
+  refreshToken: string,
+  accessToken: string
+) => {
+  setRefreshTokenCookie(res, refreshToken);
+  setAccessTokenCookie(res, accessToken);
+
+  return res;
+};
+
 export const clearAuthCookies = (res: Response) => {
   res.clearCookie("refreshToken", { path: REFRESH_TOKEN_PATH });
   res.clearCookie("accessToken");
-
   return res;
 };
