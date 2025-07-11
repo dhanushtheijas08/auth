@@ -23,3 +23,10 @@ export declare const registerSchema: z.ZodObject<{
     password: string;
     username: string;
 }>;
+export declare const verificationCodeSchema: z.ZodObject<{
+    code: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    code: string;
+}, {
+    code: string;
+}>;

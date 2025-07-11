@@ -2,7 +2,6 @@ import mongoose, { Document, Schema } from "mongoose";
 
 export type ISession = {
   userId: mongoose.Types.ObjectId;
-  token: string;
   deviceInfo?: string;
   expiresAt: Date;
   createdAt: Date;

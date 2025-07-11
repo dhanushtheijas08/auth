@@ -23,3 +23,11 @@ export const registerSchema = z
       .max(50, { message: "Username must be at most 50 characters long" }),
   })
   .merge(loginSchema);
+
+export const verificationCodeSchema = z.object({
+  code: z
+    .string()
+    .trim()
+    .min(6, { message: "Verification code must be 6 characters long" })
+    .max(6, { message: "Verification code must be 6 characters long" }),
+});

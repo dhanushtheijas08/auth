@@ -5,6 +5,7 @@ export type IUser = {
   email: string;
   password: string;
   name: string;
+  isVerified: boolean;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -35,6 +36,10 @@ const userSchema = new Schema<IUserDocument>(
       trim: true,
       minlength: [2, "Name must be at least 2 characters long"],
       maxlength: [50, "Name cannot be longer than 50 characters"],
+    },
+    isVerified: {
+      type: Boolean,
+      default: false,
     },
   },
   {

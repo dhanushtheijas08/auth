@@ -17,7 +17,10 @@ import {
   createRefreshToken,
   verifyToken,
 } from "../services/jwtToken";
-import { RefreshTokenPayload } from "../types/authTypes";
+import { AccessTokenPayload, RefreshTokenPayload } from "../types/authTypes";
+import { generateOtp, verifyOtp } from "../services/otpService";
+import { getEmailTemplate } from "../lib/emailTemplates";
+import { sendEmail } from "../services/sendEmail";
 type RegisterInput = z.infer<typeof registerSchema>;
 type LoginInput = z.infer<typeof loginSchema>;
 
@@ -34,10 +37,7 @@ export const login = async (
       throw new ApiError(401, "Invalid email or password");
     }
 
-    console.log({ user });
-
     const isMatch = await user.comparePassword(password);
-    console.log({ isMatch });
 
     if (!isMatch) {
       throw new ApiError(401, "Invalid email or password");
@@ -76,6 +76,20 @@ export const register = async (
       throw new ApiError(409, "User already exists");
     }
     const user = await User.create({ name: username, email, password });
+
+    const { code } = await generateOtp("EMAIL_VERIFICATION", user.id);
+    const emailTemplate = getEmailTemplate("EMAIL_VERIFICATION", code);
+    if (!emailTemplate) {
+      throw new ApiError(500, "Failed to generate email template");
+    }
+    const info = await sendEmail({
+      html: emailTemplate,
+      subject: "Email Verification Code",
+    });
+
+    if (!info.messageId) {
+      throw new ApiError(500, "Failed to send email");
+    }
 
     const session = await Session.create({
       userId: user.id,
@@ -173,6 +187,38 @@ export const generateNewAccessToken = async (
   } catch (error) {
     console.error("generateNewAccessToken error:", error);
     clearAuthCookies(res);
+    next(error);
+  }
+};
+
+export const verifyEmail = async (
+  req: Request<{}, {}, {}, { code: string }>,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const token = req.cookies["accessToken"];
+    if (!token) {
+      throw new ApiError(401, "No access token provided");
+    }
+    const { code } = req.query;
+    const payload = await verifyToken<AccessTokenPayload>(token);
+    if (!payload) {
+      throw new ApiError(401, "Invalid access token");
+    }
+
+    const { status, message } = await verifyOtp(
+      "EMAIL_VERIFICATION",
+      payload.userId,
+      code
+    );
+    if (!status) {
+      throw new ApiError(401, message);
+    }
+
+    res.status(200).json({ success: true, message: "Email verified" });
+  } catch (error) {
+    console.log(error);
     next(error);
   }
 };
