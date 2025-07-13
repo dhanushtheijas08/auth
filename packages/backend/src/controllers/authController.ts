@@ -222,3 +222,36 @@ export const verifyEmail = async (
     next(error);
   }
 };
+
+export const forgotPassword = async (
+  req: Request<{}, {}, { email: string }>,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+      throw new ApiError(404, "User not found");
+    }
+    const { code } = await generateOtp("RESET_PASSWORD", user.id);
+    const emailTemplate = getEmailTemplate("RESET_PASSWORD", code);
+    if (!emailTemplate) {
+      throw new ApiError(500, "Failed to generate email template");
+    }
+
+    const info = await sendEmail({
+      html: emailTemplate,
+      subject: "Reset Password Code",
+    });
+
+    if (!info.messageId) {
+      throw new ApiError(500, "Failed to send email");
+    }
+
+    res.status(200).json({ success: true, message: "Email sent" });
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};

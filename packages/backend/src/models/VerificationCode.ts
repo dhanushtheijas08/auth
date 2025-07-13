@@ -21,7 +21,7 @@ const verificationCodeSchema = new Schema<IVerificationCodeDocument>(
     },
     verificationType: {
       type: String,
-      enum: ["EMAIL_VERIFICATION", "FORGOT_PASSWORD", "RESET_PASSWORD"],
+      enum: ["EMAIL_VERIFICATION", "RESET_PASSWORD"],
       required: [true, "Verification type is required"],
     },
     expiresAt: {
@@ -32,8 +32,8 @@ const verificationCodeSchema = new Schema<IVerificationCodeDocument>(
     verificationCode: {
       type: String,
       required: [true, "Verification code is required"],
-      minlength: [6, "Verification code must be 6 characters long"],
-      maxlength: [6, "Verification code must be 6 characters long"],
+      minlength: [12, "Verification code must be 12 characters long"],
+      maxlength: [12, "Verification code must be 12 characters long"],
     },
   },
   {

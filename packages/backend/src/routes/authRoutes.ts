@@ -5,6 +5,7 @@ import {
   logout as logoutController,
   generateNewAccessToken,
   verifyEmail,
+  forgotPassword as forgotPasswordController,
 } from "../controllers/authController";
 import zodValidate from "../middlewares/zodValidate";
 import {
@@ -28,5 +29,10 @@ router.get(
   "/verify-email",
   zodValidate({ query: verificationCodeSchema }),
   verifyEmail
+);
+router.post(
+  "/forgot-password",
+  zodValidate({ body: registerSchema.pick({ email: true }) }),
+  forgotPasswordController
 );
 export default router;

@@ -6,7 +6,4 @@ export type AccessTokenPayload = {
   userId: string;
 } & RefreshTokenPayload;
 
-export type OtpType =
-  | "EMAIL_VERIFICATION"
-  | "FORGOT_PASSWORD"
-  | "RESET_PASSWORD";
+export type OtpType = "EMAIL_VERIFICATION" | "RESET_PASSWORD";

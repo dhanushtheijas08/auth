@@ -5,8 +5,8 @@ import { VerificationCode } from "../models/VerificationCode";
 import { OtpType } from "../types/authTypes";
 
 const ALPHABET =
-  "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-const OTP_LENGTH = 6;
+  "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
+const OTP_LENGTH = 12;
 const otpGenerator = customAlphabet(ALPHABET, OTP_LENGTH);
 
 export const generateOtp = async (otpType: OtpType, userId: string) => {
