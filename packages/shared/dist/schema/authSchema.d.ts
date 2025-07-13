@@ -30,3 +30,13 @@ export declare const verificationCodeSchema: z.ZodObject<{
 }, {
     code: string;
 }>;
+export declare const resetPasswordSchema: z.ZodObject<{
+    code: z.ZodString;
+    password: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    password: string;
+    code: string;
+}, {
+    password: string;
+    code: string;
+}>;

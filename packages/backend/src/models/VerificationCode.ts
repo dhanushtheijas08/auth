@@ -18,6 +18,7 @@ const verificationCodeSchema = new Schema<IVerificationCodeDocument>(
       type: Schema.Types.ObjectId,
       ref: "User",
       required: [true, "User ID is required"],
+      index: true,
     },
     verificationType: {
       type: String,
@@ -34,6 +35,8 @@ const verificationCodeSchema = new Schema<IVerificationCodeDocument>(
       required: [true, "Verification code is required"],
       minlength: [12, "Verification code must be 12 characters long"],
       maxlength: [12, "Verification code must be 12 characters long"],
+      index: true,
+      unique: true,
     },
   },
   {

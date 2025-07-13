@@ -1,4 +1,4 @@
-import { loginSchema, registerSchema } from "@auth/shared";
+import { loginSchema, registerSchema, resetPasswordSchema } from "@auth/shared";
 import { NextFunction, Request, Response } from "express";
 import { z } from "zod";
 import ApiError from "../lib/ApiError";
@@ -21,9 +21,10 @@ import { AccessTokenPayload, RefreshTokenPayload } from "../types/authTypes";
 import { generateOtp, verifyOtp } from "../services/otpService";
 import { getEmailTemplate } from "../lib/emailTemplates";
 import { sendEmail } from "../services/sendEmail";
+import { VerificationCode } from "../models/VerificationCode";
 type RegisterInput = z.infer<typeof registerSchema>;
 type LoginInput = z.infer<typeof loginSchema>;
-
+type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;
 export const login = async (
   req: Request<{}, {}, LoginInput>,
   res: Response,
@@ -250,6 +251,43 @@ export const forgotPassword = async (
     }
 
     res.status(200).json({ success: true, message: "Email sent" });
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+
+export const resetPassword = async (
+  req: Request<{}, {}, ResetPasswordInput>,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { code, password } = req.body;
+    const verificationCode = await VerificationCode.findOne({
+      verificationType: "RESET_PASSWORD",
+      expiresAt: { $gt: new Date() },
+      verificationCode: code,
+    });
+    if (!verificationCode) {
+      throw new ApiError(401, "Invalid verification code");
+    }
+
+    const user = await User.findByIdAndUpdate(verificationCode.userId, {
+      password,
+    });
+    if (!user) {
+      throw new ApiError(404, "User not found");
+    }
+
+    await VerificationCode.deleteMany({ userId: user._id });
+    await Session.deleteMany({ userId: user._id });
+
+    clearAuthCookies(res);
+
+    res
+      .status(200)
+      .json({ success: true, message: "Password reset successful" });
   } catch (error) {
     console.log(error);
     next(error);

@@ -28,6 +28,17 @@ export const verificationCodeSchema = z.object({
   code: z
     .string()
     .trim()
-    .min(6, { message: "Verification code must be 6 characters long" })
-    .max(6, { message: "Verification code must be 6 characters long" }),
+    .min(12, { message: "Verification code must be 12 characters long" })
+    .max(12, { message: "Verification code must be 12 characters long" }),
+});
+
+export const resetPasswordSchema = z.object({
+  code: z
+    .string()
+    .min(12, { message: "Verification code must be 12 characters long" })
+    .max(12, { message: "Verification code must be 12 characters long" }),
+  password: z
+    .string()
+    .min(6, { message: "Password must be at least 6 characters long" })
+    .max(128, { message: "Password must be at most 128 characters long" }),
 });
