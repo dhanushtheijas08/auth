@@ -280,7 +280,7 @@ export const resetPassword = async (
       throw new ApiError(404, "User not found");
     }
 
-    await VerificationCode.deleteMany({ userId: user._id });
+    await verificationCode.deleteOne();
     await Session.deleteMany({ userId: user._id });
 
     clearAuthCookies(res);
