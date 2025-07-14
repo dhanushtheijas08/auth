@@ -13,10 +13,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
 import { Link } from "react-router";
+import { useAuth } from "@/hooks/auth";
+import Spinner from "../ui/spinner";
 
 type LoginFormData = z.infer<typeof loginSchema>;
 
 const LoginForm = () => {
+  const { login } = useAuth();
+
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -25,9 +29,7 @@ const LoginForm = () => {
     },
   });
 
-  const onLoginSubmit = (data: LoginFormData) => {
-    console.log("Login data:", data);
-  };
+  const onLoginSubmit = (data: LoginFormData) => login.mutate(data);
 
   return (
     <Form {...form}>
@@ -42,7 +44,13 @@ const LoginForm = () => {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input type="email" placeholder="m@example.com" {...field} />
+                <Input
+                  type="email"
+                  placeholder="m@example.com"
+                  tabIndex={2}
+                  disabled={login.isPending}
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -56,6 +64,7 @@ const LoginForm = () => {
               <div className="flex items-center">
                 <FormLabel>Password</FormLabel>
                 <Link
+                  tabIndex={4}
                   to="#"
                   className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
                 >
@@ -63,14 +72,20 @@ const LoginForm = () => {
                 </Link>
               </div>
               <FormControl>
-                <Input type="password" {...field} />
+                <Input
+                  type="password"
+                  disabled={login.isPending}
+                  tabIndex={2}
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full">
+        <Button type="submit" className="w-full" tabIndex={3}>
           Login
+          {login.isPending && <Spinner size={4} />}
         </Button>
       </form>
     </Form>

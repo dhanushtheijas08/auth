@@ -22,11 +22,13 @@ __metadata:
     "@auth/shared": "npm:*"
     "@types/bcryptjs": "npm:^2.4.6"
     "@types/cookie-parser": "npm:^1"
+    "@types/cors": "npm:^2"
     "@types/express": "npm:^4.17.21"
     "@types/node": "npm:^20.14.2"
     "@types/nodemailer": "npm:^6.4.17"
     bcryptjs: "npm:^3.0.2"
     cookie-parser: "npm:^1.4.7"
+    cors: "npm:^2.8.5"
     dotenv: "npm:^16.5.0"
     express: "npm:^4.19.2"
     jose: "npm:^6.0.11"
@@ -50,6 +52,7 @@ __metadata:
     "@radix-ui/react-label": "npm:^2.1.7"
     "@radix-ui/react-slot": "npm:^1.2.3"
     "@tailwindcss/vite": "npm:^4.1.10"
+    "@tanstack/react-query": "npm:^5.83.0"
     "@types/node": "npm:^24.0.1"
     "@types/react": "npm:^19.1.2"
     "@types/react-dom": "npm:^19.1.2"
@@ -61,10 +64,12 @@ __metadata:
     eslint-plugin-react-refresh: "npm:^0.4.19"
     globals: "npm:^16.0.0"
     lucide-react: "npm:^0.514.0"
+    next-themes: "npm:^0.4.6"
     react: "npm:^19.1.0"
     react-dom: "npm:^19.1.0"
     react-hook-form: "npm:^7.57.0"
     react-router: "npm:^7.6.2"
+    sonner: "npm:^2.0.6"
     tailwind-merge: "npm:^3.3.1"
     tailwindcss: "npm:^4.1.10"
     tw-animate-css: "npm:^1.3.4"
@@ -1174,6 +1179,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tanstack/query-core@npm:5.83.0":
+  version: 5.83.0
+  resolution: "@tanstack/query-core@npm:5.83.0"
+  checksum: 10c0/e6dc480bc99eaca552a9ad65423788b60368cf99308681252fc7dbe42a3f2c1c978db0d3471cc3349b9112cfb4d967ace4e192a1d7e987e30c5c1ff74809c77c
+  languageName: node
+  linkType: hard
+
+"@tanstack/react-query@npm:^5.83.0":
+  version: 5.83.0
+  resolution: "@tanstack/react-query@npm:5.83.0"
+  dependencies:
+    "@tanstack/query-core": "npm:5.83.0"
+  peerDependencies:
+    react: ^18 || ^19
+  checksum: 10c0/883229f9219ca906a54d7caafd44d59b57db5dbe87e954f8a7027f460e9f8b97842dfbd0d676dc3111d577baf312c64f6c1fdd67cd1e4b0f0bf574e29670c606
+  languageName: node
+  linkType: hard
+
 "@tsconfig/node10@npm:^1.0.7":
   version: 1.0.11
   resolution: "@tsconfig/node10@npm:1.0.11"
@@ -1284,6 +1307,15 @@ __metadata:
   peerDependencies:
     "@types/express": "*"
   checksum: 10c0/ff7eee7b028ee3943ea92a1771d5587daf54ef038a6a24c034018956a6d0e045a16817b612c0bd53da4162c8037e1c1b8142f9f4bfe6708e20982993704fdb18
+  languageName: node
+  linkType: hard
+
+"@types/cors@npm:^2":
+  version: 2.8.19
+  resolution: "@types/cors@npm:2.8.19"
+  dependencies:
+    "@types/node": "npm:*"
+  checksum: 10c0/b5dd407040db7d8aa1bd36e79e5f3f32292f6b075abc287529e9f48df1a25fda3e3799ba30b4656667ffb931d3b75690c1d6ca71e39f7337ea6dfda8581916d0
   languageName: node
   linkType: hard
 
@@ -2041,6 +2073,16 @@ __metadata:
   version: 1.0.2
   resolution: "cookie@npm:1.0.2"
   checksum: 10c0/fd25fe79e8fbcfcaf6aa61cd081c55d144eeeba755206c058682257cb38c4bd6795c6620de3f064c740695bb65b7949ebb1db7a95e4636efb8357a335ad3f54b
+  languageName: node
+  linkType: hard
+
+"cors@npm:^2.8.5":
+  version: 2.8.5
+  resolution: "cors@npm:2.8.5"
+  dependencies:
+    object-assign: "npm:^4"
+    vary: "npm:^1"
+  checksum: 10c0/373702b7999409922da80de4a61938aabba6929aea5b6fd9096fefb9e8342f626c0ebd7507b0e8b0b311380744cc985f27edebc0a26e0ddb784b54e1085de761
   languageName: node
   linkType: hard
 
@@ -3658,6 +3700,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"next-themes@npm:^0.4.6":
+  version: 0.4.6
+  resolution: "next-themes@npm:0.4.6"
+  peerDependencies:
+    react: ^16.8 || ^17 || ^18 || ^19 || ^19.0.0-rc
+    react-dom: ^16.8 || ^17 || ^18 || ^19 || ^19.0.0-rc
+  checksum: 10c0/83590c11d359ce7e4ced14f6ea9dd7a691d5ce6843fe2dc520fc27e29ae1c535118478d03e7f172609c41b1ef1b8da6b8dd2d2acd6cd79cac1abbdbd5b99f2c4
+  languageName: node
+  linkType: hard
+
 "node-gyp@npm:latest":
   version: 11.2.0
   resolution: "node-gyp@npm:11.2.0"
@@ -3727,6 +3779,13 @@ __metadata:
   version: 3.0.0
   resolution: "normalize-path@npm:3.0.0"
   checksum: 10c0/e008c8142bcc335b5e38cf0d63cfd39d6cf2d97480af9abdbe9a439221fd4d749763bab492a8ee708ce7a194bb00c9da6d0a115018672310850489137b3da046
+  languageName: node
+  linkType: hard
+
+"object-assign@npm:^4":
+  version: 4.1.1
+  resolution: "object-assign@npm:4.1.1"
+  checksum: 10c0/1f4df9945120325d041ccf7b86f31e8bcc14e73d29171e37a7903050e96b81323784ec59f93f102ec635bcf6fa8034ba3ea0a8c7e69fa202b87ae3b6cec5a414
   languageName: node
   linkType: hard
 
@@ -4342,6 +4401,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"sonner@npm:^2.0.6":
+  version: 2.0.6
+  resolution: "sonner@npm:2.0.6"
+  peerDependencies:
+    react: ^18.0.0 || ^19.0.0 || ^19.0.0-rc
+    react-dom: ^18.0.0 || ^19.0.0 || ^19.0.0-rc
+  checksum: 10c0/df6ab28ebc53d612ea9caa3b9ac2d12b7b15b619750c5bcf6c4e064a720cb24b383fd5ce074f5fe5183115c69d7f505226649cf157e25e954447ec4ed8749291
+  languageName: node
+  linkType: hard
+
 "source-map-js@npm:^1.2.1":
   version: 1.2.1
   resolution: "source-map-js@npm:1.2.1"
@@ -4740,7 +4809,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vary@npm:~1.1.2":
+"vary@npm:^1, vary@npm:~1.1.2":
   version: 1.1.2
   resolution: "vary@npm:1.1.2"
   checksum: 10c0/f15d588d79f3675135ba783c91a4083dcd290a2a5be9fcb6514220a1634e23df116847b1cc51f66bfb0644cf9353b2abb7815ae499bab06e46dd33c1a6bf1f4f

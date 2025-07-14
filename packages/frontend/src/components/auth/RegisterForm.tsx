@@ -12,23 +12,29 @@ import { registerSchema } from "@/schema/authSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
+import { useAuth } from "@/hooks/auth";
+import Spinner from "../ui/spinner";
 
 type RegisterFormData = z.infer<typeof registerSchema>;
 
 const RegisterForm = () => {
+  const { register } = useAuth();
   const form = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      email: "",
-      password: "",
-      username: "",
+      username: "ram",
+      email: "skdasf@gsmaail.com",
+      password: "12345678",
     },
   });
+  console.log(import.meta.env.VITE_API_BASE_URL);
 
-  const onRegisterSubmit = (data: RegisterFormData) => {
-    console.log("Register data:", data);
-  };
-
+  const onRegisterSubmit = (data: RegisterFormData) =>
+    register.mutate({
+      email: data.email,
+      password: data.password,
+      username: data.username,
+    });
   return (
     <Form {...form}>
       <form
@@ -42,7 +48,11 @@ const RegisterForm = () => {
             <FormItem>
               <FormLabel>Username</FormLabel>
               <FormControl>
-                <Input placeholder="johndoe" {...field} />
+                <Input
+                  placeholder="johndoe"
+                  {...field}
+                  disabled={register.isPending}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -55,7 +65,12 @@ const RegisterForm = () => {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input type="email" placeholder="m@example.com" {...field} />
+                <Input
+                  type="email"
+                  placeholder="m@example.com"
+                  {...field}
+                  disabled={register.isPending}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -68,14 +83,19 @@ const RegisterForm = () => {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input type="password" {...field} />
+                <Input
+                  type="password"
+                  {...field}
+                  disabled={register.isPending}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full">
-          Create account
+        <Button type="submit" className="w-full" disabled={register.isPending}>
+          {register.isPending ? "Creating account..." : "Create account"}
+          {register.isPending && <Spinner size={4} />}
         </Button>
       </form>
     </Form>

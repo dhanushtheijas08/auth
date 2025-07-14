@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import authRoutes from "./routes/authRoutes";
 import { globalErrorHandler } from "./middlewares/globalErrorHandler";
+import cors from "cors";
 
 dotenv.config();
 
@@ -12,9 +13,18 @@ const PORT = process.env.PORT || 3000;
 const app = express();
 
 // Middleware
-app.use(express.json());
+
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(express.json());
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL || "http://localhost:5173",
+    // credentials: false,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
 connectMongooseURI();
 

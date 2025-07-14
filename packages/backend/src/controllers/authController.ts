@@ -1,10 +1,11 @@
-import { loginSchema, registerSchema, resetPasswordSchema } from "@auth/shared";
+import { LoginInput, RegisterInput, ResetPasswordInput } from "@auth/shared";
 import { NextFunction, Request, Response } from "express";
-import { z } from "zod";
 import ApiError from "../lib/ApiError";
 import { thirtyDaysFromNow } from "../lib/dates";
+import { getEmailTemplate } from "../lib/emailTemplates";
 import { Session } from "../models/Session";
 import { User } from "../models/User";
+import { VerificationCode } from "../models/VerificationCode";
 import {
   clearAuthCookies,
   setAccessTokenCookie,
@@ -17,14 +18,10 @@ import {
   createRefreshToken,
   verifyToken,
 } from "../services/jwtToken";
-import { AccessTokenPayload, RefreshTokenPayload } from "../types/authTypes";
 import { generateOtp, verifyOtp } from "../services/otpService";
-import { getEmailTemplate } from "../lib/emailTemplates";
 import { sendEmail } from "../services/sendEmail";
-import { VerificationCode } from "../models/VerificationCode";
-type RegisterInput = z.infer<typeof registerSchema>;
-type LoginInput = z.infer<typeof loginSchema>;
-type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;
+import { AccessTokenPayload, RefreshTokenPayload } from "../types/authTypes";
+
 export const login = async (
   req: Request<{}, {}, LoginInput>,
   res: Response,
@@ -32,6 +29,8 @@ export const login = async (
 ) => {
   try {
     const { email, password } = req.body;
+
+    console.log({ email, password });
 
     const user = await User.findOne({ email: email }).select("+password");
     if (!user) {
@@ -70,6 +69,8 @@ export const register = async (
   next: NextFunction
 ) => {
   try {
+    console.log("Register request body:", req.body);
+
     const { email, password, username } = req.body;
 
     const existing = await User.findOne({ email });
