@@ -10,6 +10,10 @@ export const authApi = {
         email: data.email,
         password: data.password,
       }),
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
 
     return response.json();
@@ -33,6 +37,18 @@ export const authApi = {
       throw new Error(errorData.message || "Registration failed");
     }
 
+    return response.json();
+  },
+  logout: async () => {
+    const response = await fetch(`http://localhost:3000/api/auth/logout`, {
+      credentials: "include",
+    });
+    return response.json();
+  },
+  getUser: async () => {
+    const response = await fetch(`http://localhost:3000/api/user`, {
+      credentials: "include",
+    });
     return response.json();
   },
 };

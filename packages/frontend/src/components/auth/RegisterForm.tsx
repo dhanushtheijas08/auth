@@ -27,7 +27,6 @@ const RegisterForm = () => {
       password: "12345678",
     },
   });
-  console.log(import.meta.env.VITE_API_BASE_URL);
 
   const onRegisterSubmit = (data: RegisterFormData) =>
     register.mutate({

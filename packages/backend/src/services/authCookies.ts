@@ -5,6 +5,7 @@ const defaultOptions: CookieOptions = {
   httpOnly: true,
   secure: process.env.NODE_ENV === "production",
   sameSite: "strict",
+  path: "/",
 };
 
 export const REFRESH_TOKEN_PATH = "/auth/refresh";
